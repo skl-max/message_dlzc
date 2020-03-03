@@ -2,6 +2,8 @@
 const express = require("express");
 const bdParser = require("body-parser");
 const session = require("express-session");
+const check = require("./router/check.js");
+const user = require("./router/user.js");
 const app = express();
 
 app.listen(4000);
@@ -25,6 +27,10 @@ app.use(express.static("./uploads"));
 app.use(express.static("./avatar"));
 
 
+// 检查用户是否登录
+app.use(check.check);
 
+// 处理用户相关的请求: 登录,注册,修改个人信息
+app.use("/user",user);
 
 

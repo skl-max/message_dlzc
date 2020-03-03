@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录</title>
+  <link rel="stylesheet" href="/css/bootstrap.css">
+</head>
+<body>
+  用户名: <input type="text"><br>
+  密码: <input type="password"><br>
+  <button id="btn">登录</button> 
+  没有账号?点击<a href="/user/regist">注册</a>
+  <script src="/js/jquery.min.js"></script>
+  <script>
+    $("#btn").on("click",function(){
+      var username = $("input[type='text']").val().trim();
+      var password = $("input[type='password']").val().trim();
+      console.log(username,password);
+      if(username==undefined || username==""){
+        alert("用户名不能为空");
+        return ;
+      }
+      if(password==undefined || password==""){
+        alert("密码不能为空");
+        return ;
+      }
+      $.ajax({
+        url:"/user/login",
+        method: "post",
+        data: {username:username,password:password},
+        success: function(result){
+          console.log(result);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -7,7 +7,8 @@
 # 需要用到的模块
 > express
 > ejs
-
+> body-parser
+> express-session
 
 
 
