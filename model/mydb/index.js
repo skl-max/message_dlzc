@@ -49,7 +49,7 @@ function remove(model,filter,callback){
  */
 function modify(model,filter,data,callback){
   // 将条件中的字符串_id转换为objectID类型
-  filter._id = mongoose.Types.ObjectId(filter._id);
+  // filter._id = mongoose.Types.ObjectId(filter._id);
   model.updateOne(filter,{$set:data}, function(err,raw){
     callback(err,raw);
   })

@@ -38,5 +38,75 @@ router.post("/login",function(req,res){
   });
 });
 
+// get /user/center请求,跳转到个人中心页面
+router.get("/center",function(req,res){
+  var username = req.session.username;
+  db.find(User,{username:username},function(err,docs){
+    if(err){
+      console.log(err);
+      // 网络错误,跳转到专门处理错误的页面
+      res.render("error",{msg: "网络波动"});
+      return ;
+    }
+    if(docs.length==0){
+      // 登录失效(有登录信息,但是数据库中没有该用户)
+      // 销毁失效的session,让用户重新登录
+      req.session.destroy(function(err){
+        if(err){
+          console.log(err);
+          res.render("error",{msg:"登录失效"});
+          return ;
+        }
+        // 销毁session成功
+        res.redirect("/");
+      });
+      return ;
+    }
+    // 查到数据,将用户的信息返回给页面
+    res.render("center",{user:docs[0]});
+  });
+});
+
+// get /user/changeNickname请求,修改昵称
+router.get("/changeNickname", function(req,res){
+  // 获取登录用户
+  var username = req.session.username;
+  // 获取参数:新的昵称
+  var newNick = req.query.nickname;
+  // 判断newNick是否存在
+  // console.log(newNick);
+  db.find(User,{nickname:newNick},function(err,docs){
+    if(err){
+      console.log(err);
+      res.send({status:2,msg:"网络波动"});
+      return ;
+    }
+    // console.log(docs);
+    if(docs.length>0){
+      // 找到数据,新的昵称已经存在
+      res.send({status:1, msg:"昵称已存在"});
+      return ;
+    }
+    // 昵称不存在,可以使用
+    // 更新数据
+    var filter = {username:username};
+    var data = {nickname:newNick};
+    console.log(filter);
+    console.log(data);
+    db.modify(User,filter,data,function(err,raw){
+      if(err){
+        console.log(err);
+        res.send({status:2,msg:"网络波动"});
+        return ;
+      }
+      if(raw.nModified==0){
+        res.send({status: 3, msg: "修改失败"});
+        return ;
+      }
+      res.send({status:0, msg: "修改成功"});
+    });
+  });
+});
+
 
 module.exports = router;

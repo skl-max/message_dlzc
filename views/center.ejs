@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人中心</title>
+  <style>
+    .right{
+      float: right;
+    }
+    .left{
+      float: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="right">
+    <a href="/user/logout">退出登录</a>&nbsp;
+    <a href="/">返回首页</a>
+  </div>
+  <div>
+    <div class="left">
+      <a href="">
+        <img src="<%= user.avatar %>" width="75px">
+      </a>
+    </div>
+    <div class="left">
+      <div>用户名：<%= user.username %></div>
+      <div>
+        昵称：<span id="nick"><%= user.nickname %></span>
+        <a href="javascript:;" onclick="changeNick()">修改昵称</a>
+      </div>
+      <div>
+        <a href="">修改密码</a>
+      </div>
+    </div>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+  <script>
+    var nickname = "";
+    // 将昵称的区域替换为文本框
+    function changeNick(){
+      nickname = $("#nick").html();
+      $("#nick").html("<input type='text' onblur='send1()'>");
+      $("input").focus();
+    }
+
+    function send1(){
+      var val =  $("input").val().trim();
+      if(val==""){
+        $("#nick").html(nickname);
+        return ;
+      }
+      // 有值,发送请求
+      $.ajax({
+        url: "/user/changeNickname",
+        data: {nickname:val},
+        success: function(result){
+          if(result.status!=0){
+            // 修改失败,还原
+            alert(result.msg);
+            $("#nick").html(nickname);
+            return ;
+          }
+          // 修改成功
+          alert("修改成功");
+          $("#nick").html(val);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
