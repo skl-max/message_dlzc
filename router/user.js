@@ -24,6 +24,7 @@ router.post("/login",function(req,res){
   db.find(User,filter,function(err,docs){
     if(err){
       console.log(err);
+      // 将错误信息发送给ajax
       res.send({status: 2, msg: "网络波动,稍后再试"});
       return ;
     }

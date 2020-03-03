@@ -4,7 +4,7 @@ var User = db.User;
 
 var data = {
   username: "test",
-  nickname: "ttt",
+  nickname: "张三",
   password: "123"
 };
 
@@ -12,9 +12,9 @@ var data = {
 
 
 
-// db.add(User,data,function(err,doc){
-//   console.log(err);
-//   console.log(doc);
-// })
+db.add(User,data,function(err,doc){
+  console.log(err);
+  console.log(doc);
+})
 
 

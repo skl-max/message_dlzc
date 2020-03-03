@@ -5,18 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>登录</title>
   <link rel="stylesheet" href="/css/bootstrap.css">
+  <style>
+    body{
+      padding-top:150px;
+    }
+  </style>
 </head>
 <body>
-  用户名: <input type="text"><br>
-  密码: <input type="password"><br>
-  <button id="btn">登录</button> 
-  没有账号?点击<a href="/user/regist">注册</a>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-1">用户名:</div>
+      <div class="col-xs-2"><input type="text"></div>
+    </div>
+    <div class="row">
+      <div class="col-xs-1">密码:</div>
+      <div class="col-xs-2"><input type="password"></div>
+    </div>
+    <button id="btn">登录</button> 
+    没有账号?点击<a href="/user/regist">注册</a>
+  </div>
   <script src="/js/jquery.min.js"></script>
   <script>
     $("#btn").on("click",function(){
       var username = $("input[type='text']").val().trim();
       var password = $("input[type='password']").val().trim();
-      console.log(username,password);
+      // console.log(username,password);
       if(username==undefined || username==""){
         alert("用户名不能为空");
         return ;
@@ -30,7 +43,17 @@
         method: "post",
         data: {username:username,password:password},
         success: function(result){
-          console.log(result);
+          if(result.status==2){
+            alert("登录失败,稍后再试");
+            return;
+          }
+          if(result.status==1){
+            alert(result.msg);
+            return ;
+          }
+          alert("登录成功");
+          // 跳转到留言的页面
+          location.href = "/";
         }
       });
     });
