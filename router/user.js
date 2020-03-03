@@ -2,6 +2,7 @@
 const router = require("express").Router();
 const md5 = require("../model/myMD5");
 const db = require("../model/mydb");
+const fd = require("formidable");
 
 const User = db.User; // 获取User对应的model
 
@@ -107,6 +108,56 @@ router.get("/changeNickname", function(req,res){
     });
   });
 });
+
+// get /user/changePwd,修改密码
+router.get("/changePwd",function(req,res){
+  // 获取登录用户名
+  var username = req.session.username;
+  // 获取新密码
+  var newPwd = req.query.pwd;
+  // 加密新密码
+  newPwd = md5.md5(newPwd);
+  // 修改密码
+  db.modify(User,{username:username},{password:newPwd},function(err,raw){
+    if(err){
+      console.log(err);
+      res.send({status:2,msg:"网络波动"});
+      return ;
+    }
+    if(raw.nModified==0){
+      res.send({status:1,msg:"修改失败"});
+      return ;
+    }
+    // 修改成功,重新登录
+    req.session.destroy(function(err){
+      if(err){
+        console.log(err);
+        res.send({status:0,msg:"请重新登录"});
+        return ;
+      }
+      res.send({status:0,msg:"修改成功"});
+    })
+  });
+});
+
+// get /user/upload ,跳转到上传图片的页面
+router.get("/upload",function(req,res){
+  res.render("upload");
+});
+
+// post /user/upload请求,处理图片的上传
+router.post("/upload",function(req,res){
+  // 使用formidable处理图片
+  var form = new fd.IncomingForm();
+  // 将uploads文件夹设置为图片上传临时保存路径
+  form.uploadDir = "./uploads";
+  // 解析请求
+  form.parse(req,function(err,fields,files){
+    console.log(files);
+    res.end();
+  });
+});
+
 
 
 module.exports = router;
