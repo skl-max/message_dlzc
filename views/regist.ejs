@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册</title>
+  <style>
+    .container{
+      margin-top: 150px;
+      margin-left: 200px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>注册</h1>
+    <div>
+      用户名: <input type="text" id="username"><span id="uname"></span>
+    </div>
+    <div>
+      密&nbsp;&nbsp;&nbsp;码: <input type="text" id="password"><span id="pwd"></span>
+    </div>
+    <button id="btn">注册</button>
+    已有账号,点击<a href="/user/login">登录</a>
+  </div>
+  <script src="/js/jquery.min.js"></script>
+  <script>
+    $("#btn").on("click",function(){
+      var username = $("#username").val().trim();
+      var password = $("#password").val().trim();
+      if(username==""){
+        $("#uname").html("用户名不能为空").css("color","red");
+        $("#pwd").html("");
+        return ;
+      }
+      if(password==""){
+        $("#pwd").html("密码不能为空").css("color","red");
+        $("#uname").html("");
+        return ;
+      }
+      // 都不为空
+      $.ajax({
+        url: "/user/regist",
+        method: "post",
+        data: {username:username,password:password},
+        success: function(result){
+          if(result.status==2){
+            alert("注册失败,稍后再试");
+            return ;
+          }
+          if(result.status==1){
+            $("#uname").html("用户名已存在").css("color","red");
+            return ;
+          }
+          alert("注册成功");
+          location.href = "/";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

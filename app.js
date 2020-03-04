@@ -24,8 +24,8 @@ app.use(bdParser.urlencoded({extended:true}));
 
 // 设置根目录
 app.use(express.static("./public"));
-app.use(express.static("./uploads"));
 app.use(express.static("./avatar"));
+app.use(express.static("./uploads"));
 
 
 // 检查用户是否登录

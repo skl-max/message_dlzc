@@ -11,20 +11,86 @@
     span{
       font-size: 30px;
     }
+    .left{
+      float: left;
+    }
+    hr{
+      clear: both;
+    }
+    .con{
+      margin-left: 10px;
+    }
+    .page{
+      padding-left: 200px;
+    }
+    .page>a{
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
-  <div>
+  <form action="/message/add">
     <a href="/user/center" class="right">个人中心</a>
     <div>
-      <img src="<%= user.avatar %>" width="50px">
-      <span><%= user.nickname %></span>
+      <% for(var i=0;i<users.length;i++){ %>
+        <% if(username==users[i].username){ %>
+        <img src="<%= users[i].avatar %>" width="100px">
+        <span><%= users[i].nickname %></span>
+        <% } %>
+      <% } %>
     </div>
-    <textarea id="msg" cols="30" rows="10"></textarea>
+    <textarea id="msg" cols="30" rows="10" name="msg"></textarea>
     <div>
-      <button>留言</button>
+      <button type="submit">留言</button>
       <a href="/user/logout">退出登录</a>
     </div>
+  </form>
+  <hr>
+  <!-- 分页 -->
+  <div class="page">
+    <a href="">&Lt;</a>
+    <% for(var i=1;i<=totalPage;i++){ %>
+      <a href="/message/show?page=<%= i %>"><%= i %></a>
+    <% } %>
+    <a href="">&Gt;</a>
   </div>
+  <!-- 展示留言的部分 -->
+  <% for(var i=0;i<msgs.length;i++){%>
+    <div class="left">
+      <% for(var j=0;j<users.length;j++){ %>
+        <% if(users[j].username==msgs[i].username){ %>
+          <img src="<%= users[j].avatar %>" alt="" width="50px" height="50px">
+        <% } %>
+      <% } %>
+    </div>
+    <div class="left con">
+      <% for(var j=0;j<users.length;j++){ %>
+        <% if(users[j].username==msgs[i].username){ %>
+          <div><%= users[j].nickname %></div>
+        <% } %>
+      <% } %>
+      <div>
+        <%= msgs[i].message %>
+      </div>
+      <div>
+        <%= msgs[i].datetime %>
+      </div>
+      <% if(username==msgs[i].username){%>
+      <div>
+        <a href="javascript:;">修改</a>
+        <a href="javascript:;" onclick="del('<%=msgs[i]._id%>')">删除</a>
+      </div>
+      <% } %>
+    </div>
+    <hr>
+  <% } %>
+  <script>
+    function del(id){
+      var f = confirm("确定删除该条留言?");
+      if(f){
+        location.href = "/message/del?id="+id;
+      }
+    }
+  </script>
 </body>
 </html>
